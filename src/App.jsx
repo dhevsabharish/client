@@ -4,13 +4,38 @@ import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
-
+import { Routes, Route } from "react-router-dom";
+import { LoginPage } from "./pages/Login";
+import { HomePage } from "./pages/Home";
+import { SignupPage } from "./pages/Signup";
+import { Secret } from "./pages/Secret";
+import { ProtectedRoute } from "./components/ProtectedRoute";
+import { AuthProvider } from "./hooks/useAuth";
 
 function App() {
   return (
-    <React.Fragment>
-      <h1>Hi</h1>
-    </React.Fragment>
+    <AuthProvider>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <HomePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignupPage />} />
+        <Route
+          path="/secret"
+          element={
+            <ProtectedRoute>
+              <Secret />
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
+    </AuthProvider>
   )
 }
 
