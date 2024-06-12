@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "../hooks/useAuth";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { Box, Button, Link, TextField, Typography, Paper } from "@mui/material";
 
 export const SignupPage = () => {
@@ -8,11 +8,15 @@ export const SignupPage = () => {
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const { signup } = useAuth();
+    const navigate = useNavigate();
 
     const handleSignup = async (e) => {
         e.preventDefault();
         if (password === confirmPassword) {
-            await signup(email, password);
+            const success = await signup(email, password);
+            if (success) {
+                navigate("/");
+            }
         } else {
             alert("Passwords do not match");
         }

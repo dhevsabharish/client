@@ -1,12 +1,11 @@
-import { createContext, useContext, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
+import { createContext, useContext, useState } from "react";
 import { useLocalStorage } from "./useLocalStorage";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-    const [user, setUser] = useLocalStorage("user", null);
     const [token, setToken] = useLocalStorage("token", null);
     const [userRole, setUserRole] = useLocalStorage("userRole", null);
     const navigate = useNavigate();
@@ -14,66 +13,57 @@ export const AuthProvider = ({ children }) => {
     const login = async (email, password) => {
         try {
             const response = await axios.post("http://localhost:3000/users/sign_in", {
-                user: { email, password }
+                user: { email, password },
             });
-            const token = response.data.token;
-            const userData = response.data.data;
-            setToken(token);
-            setUser(userData);
-            setUserRole(userData.role);
-            navigate("/");
+            // log response
+            console.log(response);
+            const authToken = response.headers.authorization;
+            const role = response.data.data.role;
+            setToken(authToken);
+            setUserRole(role);
+            // navigate("/");
+            return true;
         } catch (error) {
             console.error("Login failed:", error);
-            alert("Invalid email or password");
+            return false;
         }
     };
 
     const signup = async (email, password) => {
         try {
             const response = await axios.post("http://localhost:3000/users", {
-                user: { email, password }
+                user: { email, password },
             });
-            const token = response.data.token;
-            const userData = response.data.data;
-            setToken(token);
-            setUser(userData);
-            setUserRole(userData.role);
-            navigate("/");
+            const authToken = response.headers.authorization;
+            const role = response.data.data.role;
+            setToken(authToken);
+            setUserRole(role);
+            // navigate("/");
+            return true;
         } catch (error) {
             console.error("Signup failed:", error);
-            alert("Signup failed, please try again");
+            return false;
         }
     };
 
     const logout = async () => {
         try {
             await axios.delete("http://localhost:3000/users/sign_out", {
-                headers: { Authorization: token }
+                headers: { Authorization: token },
             });
-            setUser(null);
             setToken(null);
             setUserRole(null);
-            navigate("/", { replace: true });
+            navigate("/login");
         } catch (error) {
             console.error("Logout failed:", error);
         }
     };
 
-    const value = useMemo(
-        () => ({
-            user,
-            login,
-            signup,
-            logout,
-            token,
-            userRole
-        }),
-        [user, token, userRole]
+    return (
+        <AuthContext.Provider value={{ token, userRole, login, signup, logout }}>
+            {children}
+        </AuthContext.Provider>
     );
-
-    return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
-export const useAuth = () => {
-    return useContext(AuthContext);
-};
+export const useAuth = () => useContext(AuthContext);

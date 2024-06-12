@@ -1,16 +1,20 @@
 import { useState } from "react";
 import { useAuth } from "../hooks/useAuth";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { Box, Button, Link, TextField, Typography, Paper } from "@mui/material";
 
 export const LoginPage = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const { login } = useAuth();
+    const navigate = useNavigate();
 
     const handleLogin = async (e) => {
         e.preventDefault();
-        await login(email, password);
+        const success = await login(email, password);
+        if (success) {
+            navigate("/");
+        }
     };
 
     return (
