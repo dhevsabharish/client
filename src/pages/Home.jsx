@@ -2,7 +2,7 @@ import { useAuth } from "../hooks/useAuth";
 import { Box, Button, Typography } from "@mui/material";
 
 export const HomePage = () => {
-    const { logout, token } = useAuth();
+    const { logout, token, userRole } = useAuth();
 
     const handleLogout = () => {
         logout();
@@ -10,6 +10,8 @@ export const HomePage = () => {
 
     // Display token in the console
     console.log("Bearer token:", token);
+    // print user role
+    console.log("User role:", userRole);
 
     return (
         <Box

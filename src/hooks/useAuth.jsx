@@ -8,6 +8,7 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useLocalStorage("user", null);
     const [token, setToken] = useLocalStorage("token", null);
+    const [userRole, setUserRole] = useLocalStorage("userRole", null);
     const navigate = useNavigate();
 
     const login = async (email, password) => {
@@ -15,9 +16,11 @@ export const AuthProvider = ({ children }) => {
             const response = await axios.post("http://localhost:3000/users/sign_in", {
                 user: { email, password }
             });
-            const token = response.headers.authorization;
+            const token = response.data.token;
+            const userData = response.data.data;
             setToken(token);
-            setUser(response.data);
+            setUser(userData);
+            setUserRole(userData.role);
             navigate("/");
         } catch (error) {
             console.error("Login failed:", error);
@@ -30,9 +33,11 @@ export const AuthProvider = ({ children }) => {
             const response = await axios.post("http://localhost:3000/users", {
                 user: { email, password }
             });
-            const token = response.headers.authorization;
+            const token = response.data.token;
+            const userData = response.data.data;
             setToken(token);
-            setUser(response.data);
+            setUser(userData);
+            setUserRole(userData.role);
             navigate("/");
         } catch (error) {
             console.error("Signup failed:", error);
@@ -47,6 +52,7 @@ export const AuthProvider = ({ children }) => {
             });
             setUser(null);
             setToken(null);
+            setUserRole(null);
             navigate("/", { replace: true });
         } catch (error) {
             console.error("Logout failed:", error);
@@ -59,9 +65,10 @@ export const AuthProvider = ({ children }) => {
             login,
             signup,
             logout,
-            token
+            token,
+            userRole
         }),
-        [user, token]
+        [user, token, userRole]
     );
 
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
