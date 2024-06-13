@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { DataGrid, GridRowModes, GridActionsCellItem, GridToolbarContainer } from '@mui/x-data-grid';
+import { DataGrid, GridRowModes, GridActionsCellItem } from '@mui/x-data-grid';
 import { Box } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
@@ -7,6 +7,14 @@ import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Close';
 import { useAuth } from "../hooks/useAuth";
 import AddBookForm from './AddBookForm';
+
+const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
 
 export const LibrarianDashboard = () => {
   const [rows, setRows] = useState([]);
@@ -27,7 +35,11 @@ export const LibrarianDashboard = () => {
       });
       const data = await response.json();
       if (data.books && Array.isArray(data.books)) {
-        setRows(data.books);
+        const formattedBooks = data.books.map((book) => ({
+          ...book,
+          PublicationDate: formatDate(book.PublicationDate),
+        }));
+        setRows(formattedBooks);
       } else {
         console.error('Invalid response data:', data);
       }
@@ -60,12 +72,8 @@ export const LibrarianDashboard = () => {
     }));
     const editedRow = rows.find((row) => row.ID === id);
     try {
-      if (editedRow.isNew) {
-        // wont reach here i think
-      } else {
-        await updateBook(editedRow, token);
-        setForceUpdate((prev) => !prev); // Force re-fetch to get updated data
-      }
+      await updateBook(editedRow, token);
+      setForceUpdate((prev) => !prev); // Force re-fetch to get updated data
     } catch (error) {
       console.error('Error saving book:', error);
     }
@@ -98,17 +106,14 @@ export const LibrarianDashboard = () => {
   };
 
   const handleProcessRowUpdate = async (newRow) => {
-    if (newRow.isNew) {
-      // wont reach here i think
-    } else {
-      try {
-        await updateBook(newRow, token);
-        setForceUpdate((prev) => !prev); // Force re-fetch to get updated data
-        return newRow;
-      } catch (error) {
-        console.error('Error updating book:', error);
-        return newRow;
-      }
+    const updatedRow = { ...newRow, PublicationDate: formatDate(newRow.PublicationDate) };
+    try {
+      await updateBook(updatedRow, token);
+      setForceUpdate((prev) => !prev); // Force re-fetch to get updated data
+      return updatedRow;
+    } catch (error) {
+      console.error('Error updating book:', error);
+      return newRow;
     }
   };
 
@@ -170,7 +175,6 @@ export const LibrarianDashboard = () => {
     }
   };
 
-
   return (
     <Box sx={{ height: 500, width: '100%' }}>
       <AddBookForm token={token} onBookAdded={handleBookAdded} />
@@ -183,31 +187,32 @@ export const LibrarianDashboard = () => {
         onRowEditStart={handleRowEditStart}
         onRowEditStop={handleRowEditStop}
         processRowUpdate={handleProcessRowUpdate}
-        slots={{
-          // toolbar: EditToolbar,
-        }}
-        slotProps={{
-          // toolbar: { setRows, setRowModesModel },
-        }}
         getRowId={(row) => row.ID} // Ensure consistency with row ID key
       />
-
     </Box>
   );
 };
 
 const updateBook = async (book, token) => {
   console.log('Book data being sent:', book);
+  const bookToUpdate = {
+    title: book.Title,
+    author: book.Author,
+    genre: book.Genre,
+    publication_date: formatDate(book.PublicationDate),
+    availability: book.Availability,
+  };
   const response = await fetch(`http://localhost:3003/books/${book.ID}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
       Authorization: token,
     },
-    body: JSON.stringify(book),
+    body: JSON.stringify(bookToUpdate),
   });
   return await response.json();
 };
+
 
 const deleteBook = async (id, token) => {
   await fetch(`http://localhost:3003/books/${id}`, {
