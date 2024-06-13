@@ -30,7 +30,7 @@ export const AdminHome = () => {
                     Logout
                 </Button>
             </Box>
-            <LibrarianDashboard />
+            <LibrarianDashboard /> {/* Admin reused this component */}
         </Box>
     );
 };

@@ -7,6 +7,7 @@ import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Close';
 import { useAuth } from "../hooks/useAuth";
 import AddBookForm from './AddBookForm';
+import BorrowingRecords from './BorrowingRecords';
 
 const formatDate = (dateString) => {
   const date = new Date(dateString);
@@ -189,6 +190,7 @@ export const LibrarianDashboard = () => {
         processRowUpdate={handleProcessRowUpdate}
         getRowId={(row) => row.ID} // Ensure consistency with row ID key
       />
+      <BorrowingRecords />
     </Box>
   );
 };
