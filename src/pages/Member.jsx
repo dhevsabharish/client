@@ -67,6 +67,14 @@ export const MemberHome = () => {
         logout();
     };
 
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    };
+
     return (
         <Box>
             <Box display="flex" justifyContent="space-between" alignItems="center" p={2}>
@@ -99,7 +107,7 @@ export const MemberHome = () => {
                                 <TableRow key={book.ID}>
                                     <TableCell>{book.Title}</TableCell>
                                     <TableCell>{book.Author}</TableCell>
-                                    <TableCell>{book.PublicationDate}</TableCell>
+                                    <TableCell>{formatDate(book.PublicationDate)}</TableCell>
                                     <TableCell>{book.Genre}</TableCell>
                                     <TableCell>{book.Availability}</TableCell>
                                     <TableCell>
@@ -138,8 +146,8 @@ export const MemberHome = () => {
                             {borrowings.map((borrowing) => (
                                 <TableRow key={borrowing.ID}>
                                     <TableCell>{borrowing.BookID}</TableCell>
-                                    <TableCell>{borrowing.BorrowDate}</TableCell>
-                                    <TableCell>{borrowing.ReturnDate === '0001-01-01T00:00:00Z' ? 'Not Returned' : borrowing.ReturnDate}</TableCell>
+                                    <TableCell>{formatDate(borrowing.BorrowDate)}</TableCell>
+                                    <TableCell>{borrowing.ReturnDate === '0001-01-01T00:00:00Z' ? 'Not Returned' : formatDate(borrowing.ReturnDate)}</TableCell>
                                     <TableCell>
                                         {borrowing.ReturnDate === '0001-01-01T00:00:00Z' && (
                                             <Button
