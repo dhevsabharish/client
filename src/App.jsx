@@ -8,7 +8,6 @@ import { Routes, Route } from "react-router-dom";
 import { LoginPage } from "./pages/Login";
 import { HomePage } from "./pages/Home";
 import { SignupPage } from "./pages/Signup";
-import { Secret } from "./pages/Secret";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { AuthProvider } from "./hooks/useAuth";
 
@@ -26,14 +25,6 @@ function App() {
         />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
-        <Route
-          path="/secret"
-          element={
-            <ProtectedRoute>
-              <Secret />
-            </ProtectedRoute>
-          }
-        />
       </Routes>
     </AuthProvider>
   )

@@ -1,6 +1,6 @@
 import { Box, Button, Typography } from "@mui/material";
 import { useAuth } from "../hooks/useAuth";
-import { LibrarianDashboard } from "./LibrarianDashboard";
+import { LibrarianDashboard } from "../components/LibrarianDashboard";
 
 export const AdminHome = () => {
     const { logout } = useAuth();

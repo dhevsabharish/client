@@ -94,6 +94,7 @@ export const MemberHome = () => {
                     <Table>
                         <TableHead>
                             <TableRow>
+                                <TableCell>ID</TableCell>
                                 <TableCell>Title</TableCell>
                                 <TableCell>Author</TableCell>
                                 <TableCell>Publication Date</TableCell>
@@ -105,6 +106,7 @@ export const MemberHome = () => {
                         <TableBody>
                             {books.map((book) => (
                                 <TableRow key={book.ID}>
+                                    <TableCell>{book.ID}</TableCell> {/* Display book ID */}
                                     <TableCell>{book.Title}</TableCell>
                                     <TableCell>{book.Author}</TableCell>
                                     <TableCell>{formatDate(book.PublicationDate)}</TableCell>
