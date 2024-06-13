@@ -1,7 +1,6 @@
 import { Box, Button, Typography } from "@mui/material";
 import { useAuth } from "../hooks/useAuth";
 
-
 export const MemberHome = () => {
     const { logout } = useAuth();
 
@@ -12,15 +11,14 @@ export const MemberHome = () => {
     return (
         <Box
             display="flex"
-            flexDirection="column"
+            justifyContent="space-between"
             alignItems="center"
-            justifyContent="center"
-            minHeight="100vh"
+            p={2}
         >
-            <Typography variant="h4" component="h1" gutterBottom>
+            <Typography variant="h4" component="h1">
                 Member Home
             </Typography>
-            <Button onClick={handleLogout} variant="contained" sx={{ mt: 3 }}>
+            <Button onClick={handleLogout} variant="contained">
                 Logout
             </Button>
         </Box>

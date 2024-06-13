@@ -1,6 +1,6 @@
 import { Box, Button, Typography } from "@mui/material";
 import { useAuth } from "../hooks/useAuth";
-
+import { LibrarianDashboard } from "./LibrarianDashboard"; // Import the LibrarianDashboard component
 
 export const LibrarianHome = () => {
     const { logout } = useAuth();
@@ -14,15 +14,23 @@ export const LibrarianHome = () => {
             display="flex"
             flexDirection="column"
             alignItems="center"
-            justifyContent="center"
-            minHeight="100vh"
+            p={2}
         >
-            <Typography variant="h4" component="h1" gutterBottom>
-                Librarian Home
-            </Typography>
-            <Button onClick={handleLogout} variant="contained" sx={{ mt: 3 }}>
-                Logout
-            </Button>
+            <Box
+                display="flex"
+                justifyContent="space-between"
+                alignItems="center"
+                width="100%"
+                mb={2}
+            >
+                <Typography variant="h4" component="h1">
+                    Librarian Home
+                </Typography>
+                <Button onClick={handleLogout} variant="contained">
+                    Logout
+                </Button>
+            </Box>
+            <LibrarianDashboard /> {/* Render the LibrarianDashboard component */}
         </Box>
     );
 };
