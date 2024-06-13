@@ -13,7 +13,7 @@ const BorrowingRecords = () => {
 
     const fetchBorrowingRecords = async () => {
         try {
-            const res = await axios.get('http://localhost:3003/borrowing-records', {
+            const res = await axios.get(`${import.meta.env.VITE_GOLANG_API_URL}/borrowing-records`, {
                 headers: { Authorization: token },
             });
             setRecords(res.data);

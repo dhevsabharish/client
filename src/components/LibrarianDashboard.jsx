@@ -29,7 +29,7 @@ export const LibrarianDashboard = () => {
 
   const fetchBooks = async () => {
     try {
-      const response = await fetch('http://localhost:3003/books', {
+      const response = await fetch(`${import.meta.env.VITE_GOLANG_API_URL}/books`, {
         headers: {
           Authorization: token,
         },
@@ -204,7 +204,7 @@ const updateBook = async (book, token) => {
     publication_date: formatDate(book.PublicationDate),
     availability: book.Availability,
   };
-  const response = await fetch(`http://localhost:3003/books/${book.ID}`, {
+  const response = await fetch(`${import.meta.env.VITE_GOLANG_API_URL}/books/${book.ID}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -217,7 +217,7 @@ const updateBook = async (book, token) => {
 
 
 const deleteBook = async (id, token) => {
-  await fetch(`http://localhost:3003/books/${id}`, {
+  await fetch(`${import.meta.env.VITE_GOLANG_API_URL}/books/${id}`, {
     method: 'DELETE',
     headers: {
       Authorization: token,

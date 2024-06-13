@@ -12,7 +12,7 @@ export const AuthProvider = ({ children }) => {
 
     const login = async (email, password) => {
         try {
-            const response = await axios.post("http://localhost:3000/users/sign_in", {
+            const response = await axios.post(`${import.meta.env.VITE_RAILS_API_URL}/users/sign_in`, {
                 user: { email, password },
             });
             // log response
@@ -31,7 +31,7 @@ export const AuthProvider = ({ children }) => {
 
     const signup = async (email, password) => {
         try {
-            const response = await axios.post("http://localhost:3000/users", {
+            const response = await axios.post(`${import.meta.env.VITE_RAILS_API_URL}/users`, {
                 user: { email, password },
             });
             const authToken = response.headers.authorization;
@@ -48,7 +48,7 @@ export const AuthProvider = ({ children }) => {
 
     const logout = async () => {
         try {
-            await axios.delete("http://localhost:3000/users/sign_out", {
+            await axios.delete(`${import.meta.env.VITE_RAILS_API_URL}/users/sign_out`, {
                 headers: { Authorization: token },
             });
             setToken(null);

@@ -16,7 +16,7 @@ export const MemberHome = () => {
 
     const fetchBooks = async () => {
         try {
-            const res = await axios.get('http://localhost:3003/books', {
+            const res = await axios.get(`${import.meta.env.VITE_GOLANG_API_URL}/books`, {
                 headers: { Authorization: token },
             });
             setBooks(res.data.books);
@@ -27,7 +27,7 @@ export const MemberHome = () => {
 
     const fetchBorrowings = async () => {
         try {
-            const res = await axios.get('http://localhost:3003/my-borrowings', {
+            const res = await axios.get(`${import.meta.env.VITE_GOLANG_API_URL}/my-borrowings`, {
                 headers: { Authorization: token },
             });
             setBorrowings(res.data);
@@ -39,7 +39,7 @@ export const MemberHome = () => {
     const handleBorrowBook = async (bookId) => {
         try {
             await axios.post(
-                'http://localhost:3003/borrow',
+                `${import.meta.env.VITE_GOLANG_API_URL}/borrow`,
                 { book_id: bookId },
                 { headers: { Authorization: token } }
             );
@@ -53,7 +53,7 @@ export const MemberHome = () => {
     const handleReturnBook = async (borrowingId) => {
         try {
             await axios.post(
-                'http://localhost:3003/return',
+                `${import.meta.env.VITE_GOLANG_API_URL}/return`,
                 { borrowing_record_id: borrowingId },
                 { headers: { Authorization: token } }
             );

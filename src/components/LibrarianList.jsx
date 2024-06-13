@@ -34,7 +34,7 @@ const LibrarianList = () => {
 
     const fetchLibrarians = async () => {
         try {
-            const response = await fetch('http://localhost:3000/admin/librarians/', {
+            const response = await fetch(`${import.meta.env.VITE_RAILS_API_URL}/admin/librarians/`, {
                 headers: {
                     Authorization: token,
                 },
@@ -50,7 +50,7 @@ const LibrarianList = () => {
 
     const handleCreateLibrarian = async () => {
         try {
-            const response = await fetch('http://localhost:3000/admin/librarians/', {
+            const response = await fetch(`${import.meta.env.VITE_RAILS_API_URL}/admin/librarians/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -71,7 +71,7 @@ const LibrarianList = () => {
 
     const handleDeleteLibrarian = async (id) => {
         try {
-            const response = await fetch(`http://localhost:3000/admin/librarians/${id}`, {
+            const response = await fetch(`${import.meta.env.VITE_RAILS_API_URL}/admin/librarians/${id}`, {
                 method: 'DELETE',
                 headers: {
                     Authorization: token,

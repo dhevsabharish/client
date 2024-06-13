@@ -86,7 +86,7 @@ const AddBookForm = ({ onBookAdded }) => {
 };
 
 const addBook = async (bookData, token) => {
-    const response = await fetch('http://localhost:3003/books', {
+    const response = await fetch(`${import.meta.env.VITE_GOLANG_API_URL}/books`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

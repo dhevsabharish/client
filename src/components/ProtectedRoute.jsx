@@ -10,7 +10,7 @@ export const ProtectedRoute = ({ children }) => {
     useEffect(() => {
         const verifyToken = async () => {
             try {
-                await axios.post("http://localhost:3000/verify_token", null, {
+                await axios.post(`${import.meta.env.VITE_RAILS_API_URL}/verify_token`, null, {
                     headers: { Authorization: token },
                 });
             } catch (error) {
