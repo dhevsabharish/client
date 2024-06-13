@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Button, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
+import { Box, Button, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TextField } from '@mui/material';
 import { useAuth } from '../hooks/useAuth';
 import axios from 'axios';
 
@@ -7,6 +7,7 @@ export const MemberHome = () => {
     const { logout, token } = useAuth();
     const [books, setBooks] = useState([]);
     const [borrowings, setBorrowings] = useState([]);
+    const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(() => {
         fetchBooks();
@@ -75,6 +76,17 @@ export const MemberHome = () => {
         return `${year}-${month}-${day}`;
     };
 
+    const filterBooks = (books, searchTerm) => {
+        return books.filter(
+            (book) =>
+                book.Title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                book.Author.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                book.Genre.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+    };
+
+    const filteredBooks = filterBooks(books, searchTerm);
+
     return (
         <Box>
             <Box display="flex" justifyContent="space-between" alignItems="center" p={2}>
@@ -90,6 +102,16 @@ export const MemberHome = () => {
                 <Typography variant="h5" align="center" mb={4}>
                     Available Books
                 </Typography>
+                <Box display="flex" justifyContent="center" mb={4}>
+                    <TextField
+                        label="Search Books"
+                        variant="outlined"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        fullWidth
+                        style={{ maxWidth: 800 }}
+                    />
+                </Box>
                 <TableContainer component={Paper} style={{ maxWidth: 800, margin: '0 auto' }}>
                     <Table>
                         <TableHead>
@@ -104,9 +126,9 @@ export const MemberHome = () => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {books.map((book) => (
+                            {filteredBooks.map((book) => (
                                 <TableRow key={book.ID}>
-                                    <TableCell>{book.ID}</TableCell> {/* Display book ID */}
+                                    <TableCell>{book.ID}</TableCell>
                                     <TableCell>{book.Title}</TableCell>
                                     <TableCell>{book.Author}</TableCell>
                                     <TableCell>{formatDate(book.PublicationDate)}</TableCell>
