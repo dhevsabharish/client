@@ -13,9 +13,11 @@ export const SignupPage = () => {
     const handleSignup = async (e) => {
         e.preventDefault();
         if (password === confirmPassword) {
-            const success = await signup(email, password);
-            if (success) {
+            const result = await signup(email, password);
+            if (result.success) {
                 navigate("/");
+            } else {
+                alert(result.message);
             }
         } else {
             alert("Passwords do not match");

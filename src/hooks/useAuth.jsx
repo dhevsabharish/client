@@ -15,17 +15,14 @@ export const AuthProvider = ({ children }) => {
             const response = await axios.post(`${import.meta.env.VITE_RAILS_API_URL}/users/sign_in`, {
                 user: { email, password },
             });
-            // log response
-            console.log(response);
             const authToken = response.headers.authorization;
             const role = response.data.data.role;
             setToken(authToken);
             setUserRole(role);
-            // navigate("/");
-            return true;
+            return { success: true };
         } catch (error) {
             console.error("Login failed:", error);
-            return false;
+            return { success: false, message: error.response?.data || "Login failed" };
         }
     };
 
@@ -38,11 +35,10 @@ export const AuthProvider = ({ children }) => {
             const role = response.data.data.role;
             setToken(authToken);
             setUserRole(role);
-            // navigate("/");
-            return true;
+            return { success: true };
         } catch (error) {
             console.error("Signup failed:", error);
-            return false;
+            return { success: false, message: "Signup failed" };
         }
     };
 
