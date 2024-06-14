@@ -156,38 +156,44 @@ export const MemberHome = () => {
                 <Typography variant="h5" align="center" mb={4}>
                     My Borrowings
                 </Typography>
-                <TableContainer component={Paper} style={{ maxWidth: 800, margin: '0 auto' }}>
-                    <Table>
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>Book ID</TableCell>
-                                <TableCell>Borrow Date</TableCell>
-                                <TableCell>Return Date</TableCell>
-                                <TableCell>Action</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {borrowings.map((borrowing) => (
-                                <TableRow key={borrowing.ID}>
-                                    <TableCell>{borrowing.BookID}</TableCell>
-                                    <TableCell>{formatDate(borrowing.BorrowDate)}</TableCell>
-                                    <TableCell>{borrowing.ReturnDate === '0001-01-01T00:00:00Z' ? 'Not Returned' : formatDate(borrowing.ReturnDate)}</TableCell>
-                                    <TableCell>
-                                        {borrowing.ReturnDate === '0001-01-01T00:00:00Z' && (
-                                            <Button
-                                                variant="contained"
-                                                color="primary"
-                                                onClick={() => handleReturnBook(borrowing.ID)}
-                                            >
-                                                Return
-                                            </Button>
-                                        )}
-                                    </TableCell>
+                {borrowings.length > 0 ? (
+                    <TableContainer component={Paper} style={{ maxWidth: 800, margin: '0 auto' }}>
+                        <Table>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell>Book ID</TableCell>
+                                    <TableCell>Borrow Date</TableCell>
+                                    <TableCell>Return Date</TableCell>
+                                    <TableCell>Action</TableCell>
                                 </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
+                            </TableHead>
+                            <TableBody>
+                                {borrowings.map((borrowing) => (
+                                    <TableRow key={borrowing.ID}>
+                                        <TableCell>{borrowing.BookID}</TableCell>
+                                        <TableCell>{formatDate(borrowing.BorrowDate)}</TableCell>
+                                        <TableCell>{borrowing.ReturnDate === '0001-01-01T00:00:00Z' ? 'Not Returned' : formatDate(borrowing.ReturnDate)}</TableCell>
+                                        <TableCell>
+                                            {borrowing.ReturnDate === '0001-01-01T00:00:00Z' && (
+                                                <Button
+                                                    variant="contained"
+                                                    color="primary"
+                                                    onClick={() => handleReturnBook(borrowing.ID)}
+                                                >
+                                                    Return
+                                                </Button>
+                                            )}
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                ) : (
+                    <Typography variant="body1" align="center">
+                        You have no borrowing history.
+                    </Typography>
+                )}
             </Box>
         </Box>
     );

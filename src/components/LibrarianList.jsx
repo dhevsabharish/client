@@ -62,6 +62,7 @@ const LibrarianList = () => {
                 setNewLibrarian({ email: '', password: '' });
                 fetchLibrarians();
             } else {
+                alert('Error creating librarian');
                 console.error('Error creating librarian:', response.status);
             }
         } catch (error) {
