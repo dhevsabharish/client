@@ -10,27 +10,33 @@ export const MemberHome = () => {
     const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(() => {
-        fetchBooks();
-        fetchBorrowings();
+        fetchBooksAndBorrowings();
     }, []);
 
-    const fetchBooks = async () => {
+    const fetchBooksAndBorrowings = async () => {
         try {
-            const res = await axios.get(`${import.meta.env.VITE_GOLANG_API_URL}/books`, {
+            // Fetch books
+            const booksRes = await axios.get(`${import.meta.env.VITE_GOLANG_API_URL}/books`, {
                 headers: { Authorization: token },
             });
-            setBooks(res.data.books);
-        } catch (err) {
-            console.error(err);
-        }
-    };
+            const availableBooks = booksRes.data.books;
+            setBooks(availableBooks);
 
-    const fetchBorrowings = async () => {
-        try {
-            const res = await axios.get(`${import.meta.env.VITE_GOLANG_API_URL}/my-borrowings`, {
+            // Fetch borrowings
+            const borrowingsRes = await axios.get(`${import.meta.env.VITE_GOLANG_API_URL}/my-borrowings`, {
                 headers: { Authorization: token },
             });
-            setBorrowings(res.data);
+
+            // Cross-check borrowings with available books
+            const borrowingsWithDeletedStatus = borrowingsRes.data.map(borrowing => {
+                const bookExists = availableBooks.some(book => book.ID === borrowing.BookID);
+                return {
+                    ...borrowing,
+                    isBookDeleted: !bookExists,
+                };
+            });
+
+            setBorrowings(borrowingsWithDeletedStatus);
         } catch (err) {
             console.error(err);
         }
@@ -43,8 +49,7 @@ export const MemberHome = () => {
                 { book_id: bookId },
                 { headers: { Authorization: token } }
             );
-            fetchBooks();
-            fetchBorrowings();
+            fetchBooksAndBorrowings();
         } catch (err) {
             console.error(err);
         }
@@ -57,8 +62,7 @@ export const MemberHome = () => {
                 { borrowing_record_id: borrowingId },
                 { headers: { Authorization: token } }
             );
-            fetchBooks();
-            fetchBorrowings();
+            fetchBooksAndBorrowings();
         } catch (err) {
             console.error(err);
         }
@@ -164,6 +168,7 @@ export const MemberHome = () => {
                                     <TableCell>Book ID</TableCell>
                                     <TableCell>Borrow Date</TableCell>
                                     <TableCell>Return Date</TableCell>
+                                    <TableCell>Status</TableCell>
                                     <TableCell>Action</TableCell>
                                 </TableRow>
                             </TableHead>
@@ -172,9 +177,14 @@ export const MemberHome = () => {
                                     <TableRow key={borrowing.ID}>
                                         <TableCell>{borrowing.BookID}</TableCell>
                                         <TableCell>{formatDate(borrowing.BorrowDate)}</TableCell>
-                                        <TableCell>{borrowing.ReturnDate === '0001-01-01T00:00:00Z' ? 'Not Returned' : formatDate(borrowing.ReturnDate)}</TableCell>
                                         <TableCell>
-                                            {borrowing.ReturnDate === '0001-01-01T00:00:00Z' && (
+                                            {borrowing.ReturnDate === '0001-01-01T00:00:00Z' ? 'Not Returned' : formatDate(borrowing.ReturnDate)}
+                                        </TableCell>
+                                        <TableCell>
+                                            {borrowing.isBookDeleted ? 'Book Deleted' : 'Available'}
+                                        </TableCell>
+                                        <TableCell>
+                                            {borrowing.ReturnDate === '0001-01-01T00:00:00Z' && !borrowing.isBookDeleted && (
                                                 <Button
                                                     variant="contained"
                                                     color="primary"
