@@ -116,44 +116,49 @@ export const MemberHome = () => {
                         style={{ maxWidth: 800 }}
                     />
                 </Box>
-                <TableContainer component={Paper} style={{ maxWidth: 800, margin: '0 auto' }}>
-                    <Table>
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>ID</TableCell>
-                                <TableCell>Title</TableCell>
-                                <TableCell>Author</TableCell>
-                                <TableCell>Publication Date</TableCell>
-                                <TableCell>Genre</TableCell>
-                                <TableCell>Availability</TableCell>
-                                <TableCell>Action</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {filteredBooks.map((book) => (
-                                <TableRow key={book.ID}>
-                                    <TableCell>{book.ID}</TableCell>
-                                    <TableCell>{book.Title}</TableCell>
-                                    <TableCell>{book.Author}</TableCell>
-                                    <TableCell>{formatDate(book.PublicationDate)}</TableCell>
-                                    <TableCell>{book.Genre}</TableCell>
-                                    <TableCell>{book.Availability}</TableCell>
-                                    <TableCell>
-                                        {book.Availability > 0 && (
-                                            <Button
-                                                variant="contained"
-                                                color="primary"
-                                                onClick={() => handleBorrowBook(book.ID)}
-                                            >
-                                                Borrow
-                                            </Button>
-                                        )}
-                                    </TableCell>
+                {filteredBooks.length > 0 ?
+                    (<TableContainer component={Paper} style={{ maxWidth: 800, margin: '0 auto' }}>
+                        <Table>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell>ID</TableCell>
+                                    <TableCell>Title</TableCell>
+                                    <TableCell>Author</TableCell>
+                                    <TableCell>Publication Date</TableCell>
+                                    <TableCell>Genre</TableCell>
+                                    <TableCell>Availability</TableCell>
+                                    <TableCell>Action</TableCell>
                                 </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
+                            </TableHead>
+                            <TableBody>
+                                {filteredBooks.map((book) => (
+                                    <TableRow key={book.ID}>
+                                        <TableCell>{book.ID}</TableCell>
+                                        <TableCell>{book.Title}</TableCell>
+                                        <TableCell>{book.Author}</TableCell>
+                                        <TableCell>{formatDate(book.PublicationDate)}</TableCell>
+                                        <TableCell>{book.Genre}</TableCell>
+                                        <TableCell>{book.Availability}</TableCell>
+                                        <TableCell>
+                                            {book.Availability > 0 && (
+                                                <Button
+                                                    variant="contained"
+                                                    color="primary"
+                                                    onClick={() => handleBorrowBook(book.ID)}
+                                                >
+                                                    Borrow
+                                                </Button>
+                                            )}
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>) : (
+                        <Typography variant="body1" align="center">
+                            No results found.
+                        </Typography>
+                    )}
             </Box>
 
             <Box mt={8}>
