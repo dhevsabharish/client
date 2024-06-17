@@ -12,6 +12,11 @@ export const AuthProvider = ({ children }) => {
 
     const login = async (email, password) => {
         try {
+            if (token) {
+                await axios.delete(`${import.meta.env.VITE_RAILS_API_URL}/users/sign_out`, {
+                    headers: { Authorization: token },
+                });
+            }
             const response = await axios.post(`${import.meta.env.VITE_RAILS_API_URL}/users/sign_in`, {
                 user: { email, password },
             });
