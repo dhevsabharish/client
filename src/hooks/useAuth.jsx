@@ -1,13 +1,13 @@
 import { createContext, useContext, useState } from "react";
-import { useLocalStorage } from "./useLocalStorage";
+import { useSessionStorage } from "./useSessionStorage";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-    const [token, setToken] = useLocalStorage("token", null);
-    const [userRole, setUserRole] = useLocalStorage("userRole", null);
+    const [token, setToken] = useSessionStorage("token", null);
+    const [userRole, setUserRole] = useSessionStorage("userRole", null);
     const navigate = useNavigate();
 
     const login = async (email, password) => {
