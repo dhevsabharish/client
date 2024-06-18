@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { DataGrid, GridRowModes, GridActionsCellItem } from '@mui/x-data-grid';
-import { Box } from '@mui/material';
+import { Box, Snackbar, Alert } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import SaveIcon from '@mui/icons-material/Save';
@@ -22,6 +22,7 @@ export const LibrarianDashboard = () => {
   const [rowModesModel, setRowModesModel] = useState({});
   const { token } = useAuth();
   const [forceUpdate, setForceUpdate] = useState(false);
+  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
 
   useEffect(() => {
     fetchBooks();
@@ -46,6 +47,7 @@ export const LibrarianDashboard = () => {
       }
     } catch (error) {
       console.error('Error fetching books:', error);
+      setSnackbar({ open: true, message: 'Error fetching books', severity: 'error' });
     }
   };
 
@@ -77,6 +79,7 @@ export const LibrarianDashboard = () => {
       setForceUpdate((prev) => !prev); // Force re-fetch to get updated data
     } catch (error) {
       console.error('Error saving book:', error);
+      setSnackbar({ open: true, message: 'Error saving book', severity: 'error' });
     }
   };
 
@@ -87,6 +90,7 @@ export const LibrarianDashboard = () => {
       setForceUpdate((prev) => !prev); // Toggle the dummy state to force re-render
     } catch (error) {
       console.error('Error deleting book:', error);
+      setSnackbar({ open: true, message: 'Error deleting book', severity: 'error' });
     }
   };
 
@@ -114,6 +118,7 @@ export const LibrarianDashboard = () => {
       return updatedRow;
     } catch (error) {
       console.error('Error updating book:', error);
+      setSnackbar({ open: true, message: 'Error updating book: ' + error.message, severity: 'error' });
       return newRow;
     }
   };
@@ -173,7 +178,12 @@ export const LibrarianDashboard = () => {
       setRows((prevRows) => [...prevRows, newBook]);
     } catch (error) {
       console.error('Error updating books:', error);
+      setSnackbar({ open: true, message: 'Error adding book', severity: 'error' });
     }
+  };
+
+  const handleCloseSnackbar = () => {
+    setSnackbar({ ...snackbar, open: false });
   };
 
   return (
@@ -191,6 +201,15 @@ export const LibrarianDashboard = () => {
         getRowId={(row) => row.ID} // Ensure consistency with row ID key
       />
       <BorrowingRecords />
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+      >
+        <Alert onClose={handleCloseSnackbar} severity={snackbar.severity} sx={{ width: '100%' }}>
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };
@@ -212,17 +231,28 @@ const updateBook = async (book, token) => {
     },
     body: JSON.stringify(bookToUpdate),
   });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message || 'Failed to update book');
+  }
+
   return await response.json();
 };
 
 
 const deleteBook = async (id, token) => {
-  await fetch(`${import.meta.env.VITE_GOLANG_API_URL}/books/${id}`, {
+  const response = await fetch(`${import.meta.env.VITE_GOLANG_API_URL}/books/${id}`, {
     method: 'DELETE',
     headers: {
       Authorization: token,
     },
   });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message || 'Failed to delete book');
+  }
 };
 
 export default LibrarianDashboard;
